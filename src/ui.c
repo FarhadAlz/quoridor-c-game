@@ -176,9 +176,10 @@ void withComputer(struct Game *game)
             continue;
         }
 
-        enum ComputerAction actiontype = computerDecideAction(computer);
+        enum ComputerAction actiontype = computerDecideAction(game, computer,&game->player1);
         Sleep(1000);
-        if(actiontype == COMPUTER_MOVE) computerMove(game, computer,&game->player1);
+        if(actiontype == COMPUTER_MOVE) 
+            computerSmartMove(game, computer);
         else computerPlaceWall(game, computer);
     }
 
