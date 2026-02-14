@@ -85,8 +85,6 @@ enum WallStatus
     VALIDATE_WALL,
 };
 
-// ======= Structs =======
-
 struct Wall
 {
     int owner;
@@ -122,24 +120,34 @@ struct Game
     struct Wall walls[100];
 };
 
+//=======================
 struct Player constructPlayer(int x, int y, int wallcount, char name[]);
 
 struct Game constructGame(struct Player player_1, struct Player player_2, int dimention);
-
+//=======================
 enum MoveStatus validateMove(struct Player *player, struct Game *gameBoard, enum Direction direction, int *out_x, int *out_y);
+
 enum GameStatus action(struct Game *game, struct Player *player, enum Direction direction);
+
 enum winner checkwinner(struct Game *game);
+
 enum Direction getArrowKey();
+
 enum Direction readArrowKey(char Arrow);
 
-int hasHorizontalWall(struct Game *game, int x, int y);
-int hasVerticalWall(struct Game *game, int x, int y);
-void addWall(struct Game *game, int x, int y, char d, int owner);
 enum WallStatus checkWall(struct Game *game, int x, int y, char d);
+//=======================
+int hasHorizontalWall(struct Game *game, int x, int y);
+
+int hasVerticalWall(struct Game *game, int x, int y);
+
 int isPlayerBlocking(struct Player *other, int x, int y);
+
+void addWall(struct Game *game, int x, int y, char d, int owner);
 
 void printGameBoard(struct Game *game);
 
 void checkPath(struct Game *game, int x, int y, int player, int visited[10][10]);
+
 
 #endif
