@@ -176,9 +176,9 @@ void withComputer(struct Game *game)
             continue;
         }
 
-        enum ComputerAction actiontype = randomComputerAction(computer);
+        enum ComputerAction actiontype = computerDecideAction(computer);
         Sleep(1000);
-        if(actiontype == COMPUTER_MOVE) computerMove(game, computer);
+        if(actiontype == COMPUTER_MOVE) computerMove(game, computer,&game->player1);
         else computerPlaceWall(game, computer);
     }
 
@@ -187,6 +187,7 @@ void withComputer(struct Game *game)
     if(w == PLAYER1_WIN) printf("Congratulations! You win :))\n");
     else printf("GAME OVER, Computer wins!\n");
     remove("data/SaveGame.dat");
+    exit(0);
 }
 
 
