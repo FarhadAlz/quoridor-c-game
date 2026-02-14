@@ -1,7 +1,7 @@
 #ifndef WALL_H
 #define WALL_H
 
-#include "game_types.h"
+#include "player.h"
 
 void addWall(struct Game *game, int x, int y, char d, int owner);
 int hasHorizontalWall(struct Game *game, int x, int y);

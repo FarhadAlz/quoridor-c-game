@@ -1,5 +1,5 @@
 #include "game.h"
-#include "game_types.h"
+#include "player.h"
 
 struct Player constructPlayer(int x, int y, int wallcount, char name[])
 {

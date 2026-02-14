@@ -1,7 +1,7 @@
 #ifndef SAVE_H
 #define SAVE_H
 
-#include "game_types.h"
+#include "player.h"
 
 void saveGame(struct Game *game);
 int loadGame(struct Game *game);

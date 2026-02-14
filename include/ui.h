@@ -1,7 +1,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include "game_types.h"
+#include "player.h"
 
 void welcome();
 void choosePlayer();
