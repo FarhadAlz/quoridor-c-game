@@ -7,8 +7,6 @@
 #include "wall.h"
 #include "ai.h"
 
-
-
 int evaluateGame(struct Game *game)
 {
     int myDist = bfsShortestPath(game, game->player2.x, game->player2.y, 2);
@@ -37,7 +35,8 @@ int bfsShortestPath(struct Game *game, int startX, int startY, int player)
         for (int j = 0; j < 10; j++)
             dist[i][j] = INT_MAX;
 
-    typedef struct {
+    typedef struct
+    {
         int x, y;
     } Node;
 
@@ -55,29 +54,29 @@ int bfsShortestPath(struct Game *game, int startX, int startY, int player)
         int y = cur.y;
         int d = dist[y][x];
 
-        if (y > 0 && !hasHorizontalWall(game, x, y) && !visited[y-1][x])
+        if (y > 0 && !hasHorizontalWall(game, x, y) && !visited[y - 1][x])
         {
-            visited[y-1][x] = 1;
-            dist[y-1][x] = d + 1;
-            queue[back++] = (Node){x, y-1};
+            visited[y - 1][x] = 1;
+            dist[y - 1][x] = d + 1;
+            queue[back++] = (Node){x, y - 1};
         }
-        if (y < game->dim - 1 && !hasHorizontalWall(game, x, y+1) && !visited[y+1][x])
+        if (y < game->dim - 1 && !hasHorizontalWall(game, x, y + 1) && !visited[y + 1][x])
         {
-            visited[y+1][x] = 1;
-            dist[y+1][x] = d + 1;
-            queue[back++] = (Node){x, y+1};
+            visited[y + 1][x] = 1;
+            dist[y + 1][x] = d + 1;
+            queue[back++] = (Node){x, y + 1};
         }
-        if (x > 0 && !hasVerticalWall(game, x, y) && !visited[y][x-1])
+        if (x > 0 && !hasVerticalWall(game, x, y) && !visited[y][x - 1])
         {
-            visited[y][x-1] = 1;
-            dist[y][x-1] = d + 1;
-            queue[back++] = (Node){x-1, y};
+            visited[y][x - 1] = 1;
+            dist[y][x - 1] = d + 1;
+            queue[back++] = (Node){x - 1, y};
         }
-        if (x < game->dim - 1 && !hasVerticalWall(game, x+1, y) && !visited[y][x+1])
+        if (x < game->dim - 1 && !hasVerticalWall(game, x + 1, y) && !visited[y][x + 1])
         {
-            visited[y][x+1] = 1;
-            dist[y][x+1] = d + 1;
-            queue[back++] = (Node){x+1, y};
+            visited[y][x + 1] = 1;
+            dist[y][x + 1] = d + 1;
+            queue[back++] = (Node){x + 1, y};
         }
     }
 
@@ -86,8 +85,8 @@ int bfsShortestPath(struct Game *game, int startX, int startY, int player)
     {
         for (int i = 0; i < game->dim; i++)
         {
-            if (dist[game->dim-1][i] < shortest)
-                shortest = dist[game->dim-1][i];
+            if (dist[game->dim - 1][i] < shortest)
+                shortest = dist[game->dim - 1][i];
         }
     }
     else
@@ -107,7 +106,7 @@ void computerSmartMove(struct Game *game, struct Player *computer)
     int best_x = computer->x;
     int best_y = computer->y;
     int playerNum = (computer == &game->player1) ? 1 : 2;
-    int best_dist = bfsShortestPath(game, computer->x, computer->y,playerNum);
+    int best_dist = bfsShortestPath(game, computer->x, computer->y, playerNum);
 
     int dest_x, dest_y;
     enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
@@ -131,13 +130,12 @@ void computerSmartMove(struct Game *game, struct Player *computer)
     computer->y = best_y;
 }
 
-
 void computerPlaceWall(struct Game *game, struct Player *computer)
 {
     int dimention = game->dim;
     int wallPlaced = 0;
 
-    for(int attempts = 0; attempts < 20 && !wallPlaced; attempts++)
+    for (int attempts = 0; attempts < 20 && !wallPlaced; attempts++)
     {
         int x = rand() % (dimention - 1);
         int y = rand() % (dimention - 1);
@@ -145,14 +143,14 @@ void computerPlaceWall(struct Game *game, struct Player *computer)
         int pre_count = game->wall_count;
 
         addWall(game, x, y, dir, 2);
-        if(game->wall_count > pre_count)
+        if (game->wall_count > pre_count)
         {
             wallPlaced = 1;
             computer->canwall--;
         }
     }
 
-    if(!wallPlaced)
+    if (!wallPlaced)
     {
         printf("Computer could not place a wall, will move instead.\n");
         computerSmartMove(game, computer);

@@ -2,7 +2,6 @@
 #include "wall.h"
 #include "movement.h"
 
-
 void checkPath(struct Game *game, int x, int y, int player, int visited[10][10])
 {
     if (game->pathflag)
@@ -90,7 +89,6 @@ int canDiagonalRight(struct Game *game, enum Direction dir, int x, int y)
     return 0;
 }
 
-
 void directJumpTarget(enum Direction dir, int x, int y, int *out_x, int *out_y)
 {
     *out_x = x;
@@ -150,7 +148,6 @@ enum DiagonalMove forcedDiagonal(enum Direction dir, int left)
     return UP_LEFT;
 }
 
-
 enum MoveStatus checkJump(struct Player *player, struct Player *otherPlayer, struct Game *game, enum Direction direction, int x, int y, int *out_x, int *out_y)
 {
     if (otherPlayer->x != x || otherPlayer->y != y)
@@ -192,7 +189,6 @@ enum MoveStatus checkJump(struct Player *player, struct Player *otherPlayer, str
     return JUMP;
 }
 
-
 enum MoveStatus validateMove(struct Player *player, struct Game *gameBoard, enum Direction direction, int *out_x, int *out_y)
 {
     int next_x_move = player->x;
@@ -232,7 +228,6 @@ enum MoveStatus validateMove(struct Player *player, struct Game *gameBoard, enum
     return checkJump(player, otherPlayer, gameBoard, direction, next_x_move, next_y_move, out_x, out_y);
 };
 
-
 enum winner checkwinner(struct Game *game)
 {
     if (game->player1.y == game->dim - 1)
@@ -271,7 +266,6 @@ void switchTurn(struct Game *game)
 {
     game->currentPlayer ^= 1;
 }
-
 
 enum Direction readArrowKey(char Arrow)
 {

@@ -5,7 +5,8 @@ int loadGame(struct Game *game)
 {
     FILE *fp = fopen("data/SaveGame.dat", "rb");
 
-    if (!fp) return 0;
+    if (!fp)
+        return 0;
 
     fread(game, sizeof(struct Game), 1, fp);
     fclose(fp);
