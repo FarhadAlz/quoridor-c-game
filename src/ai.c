@@ -132,27 +132,46 @@ void computerSmartMove(struct Game *game, struct Player *computer)
 
 void computerPlaceWall(struct Game *game, struct Player *computer)
 {
-    int dimention = game->dim;
-    int wallPlaced = 0;
+    struct Player *opponent = &game->player1;
 
-    for (int attempts = 0; attempts < 20 && !wallPlaced; attempts++)
+    int ox = opponent->x;
+    int oy = opponent->y;
+
+    int bestDist = bfsShortestPath(game,ox,oy,1);
+
+    enum Direction bestDir;
+    int dest_x,dest_y;
+
+    enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+
+    for(int i = 0;i < 4;i++)
     {
-        int x = rand() % (dimention - 1);
-        int y = rand() % (dimention - 1);
-        char dir = (rand() % 2) ? 'H' : 'V';
-        int pre_count = game->wall_count;
+        enum MoveStatus status = validateMove(opponent,game,dirs[i],&dest_x,&dest_y);
 
-        addWall(game, x, y, dir, 2);
-        if (game->wall_count > pre_count)
+        if(status = VALID_MOVE)
         {
-            wallPlaced = 1;
-            computer->canwall--;
+            int dist = bfsShortestPath(game,dest_x,dest_y,1);
+
+            if(dist < bestDist)
+            {
+                bestDist = dist;
+                bestDir = dirs[i];
+            }
         }
     }
 
-    if (!wallPlaced)
+    int pre = game->wall_count;
+
+    switch(bestDir)
     {
-        printf("Computer could not place a wall, will move instead.\n");
-        computerSmartMove(game, computer);
+        case UP   : addWall(game,ox,oy,'H',2);      break;
+        case DOWN : addWall(game,ox,oy+1,'H',2);    break;
+        case LEFT : addWall(game,ox,oy,'H',2);      break;
+        case RIGHT: addWall(game,ox+1,oy,'H',2);    break;
     }
+    if(game->wall_count > pre)
+        computer->canwall--;
+
+    else
+    computerSmartMove(game,computer);
 }
