@@ -7,33 +7,36 @@
 #include "wall.h"
 #include "ai.h"
 
+/**
+ * @details Checking the players' status relative to the winning position.
+ */
 int evaluateGame(struct Game *game)
 {
     int myDist = bfsShortestPath(game, game->player2.x, game->player2.y, 2);
     int oppDist = bfsShortestPath(game, game->player1.x, game->player1.y, 1);
 
     int wallFactor = game->player2.canwall - game->player1.canwall;
-    return oppDist - myDist + wallFactor;
+    return (oppDist - myDist + wallFactor);
 }
 
+/**
+ * @details Computer decision based on players' position.
+ */
 enum ComputerAction computerDecideAction(struct Game *game, struct Player *computer, struct Player *opponent)
 {
     int myDist = bfsShortestPath(game, computer->x, computer->y, (computer == &game->player1) ? 1 : 2);
     int oppDist = bfsShortestPath(game, opponent->x, opponent->y, (opponent == &game->player1) ? 1 : 2);
 
-    if (myDist > oppDist || computer->canwall <= 0)
-        return COMPUTER_MOVE;
-    else
-        return COMPUTER_WALL;
+    return (myDist > oppDist || computer->canwall <= 0) ? COMPUTER_MOVE : COMPUTER_WALL;
 }
 
 int bfsShortestPath(struct Game *game, int startX, int startY, int player)
 {
     int visited[10][10] = {0};
     int dist[10][10];
+
     for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++)
-            dist[i][j] = INT_MAX;
+        for (int j = 0; j < 10; j++) dist[i][j] = INT_MAX;
 
     typedef struct
     {
@@ -81,39 +84,35 @@ int bfsShortestPath(struct Game *game, int startX, int startY, int player)
     }
 
     int shortest = INT_MAX;
+
     if (player == 1)
-    {
         for (int i = 0; i < game->dim; i++)
-        {
-            if (dist[game->dim - 1][i] < shortest)
-                shortest = dist[game->dim - 1][i];
-        }
-    }
+            if (dist[game->dim - 1][i] < shortest) shortest = dist[game->dim - 1][i];
     else
-    {
         for (int i = 0; i < game->dim; i++)
-        {
-            if (dist[0][i] < shortest)
-                shortest = dist[0][i];
-        }
-    }
+            if (dist[0][i] < shortest) shortest = dist[0][i];
 
     return shortest;
 }
 
+/**
+ * @details Computer decision based on bfs algorithm.
+ */
 void computerSmartMove(struct Game *game, struct Player *computer)
 {
     int best_x = computer->x;
     int best_y = computer->y;
+
     int playerNum = (computer == &game->player1) ? 1 : 2;
     int best_dist = bfsShortestPath(game, computer->x, computer->y, playerNum);
 
-    int dest_x, dest_y;
     enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+    int dest_x, dest_y;
 
     for (int i = 0; i < 4; i++)
     {
         enum MoveStatus status = validateMove(computer, game, dirs[i], &dest_x, &dest_y);
+
         if (status == VALID_MOVE || status == JUMP)
         {
             int dist = bfsShortestPath(game, dest_x, dest_y, (computer == &game->player1) ? 1 : 2);
@@ -130,6 +129,9 @@ void computerSmartMove(struct Game *game, struct Player *computer)
     computer->y = best_y;
 }
 
+/**
+ * @details Computer decision about placing walls based on making the opponent's path longer.
+ */
 void computerPlaceWall(struct Game *game, struct Player *computer)
 {
     struct Player *opponent = &game->player1;
@@ -137,20 +139,18 @@ void computerPlaceWall(struct Game *game, struct Player *computer)
     int ox = opponent->x;
     int oy = opponent->y;
 
-    int bestDist = bfsShortestPath(game,ox,oy,1);
-
-    enum Direction bestDir;
+    int bestDist = bfsShortestPath(game, ox, oy, 1);
     int dest_x,dest_y;
-
     enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+    enum Direction bestDir;
 
-    for(int i = 0;i < 4;i++)
+    for(int i = 0; i < 4; i++)
     {
-        enum MoveStatus status = validateMove(opponent,game,dirs[i],&dest_x,&dest_y);
+        enum MoveStatus status = validateMove(opponent, game, dirs[i], &dest_x, &dest_y);
 
         if(status = VALID_MOVE)
         {
-            int dist = bfsShortestPath(game,dest_x,dest_y,1);
+            int dist = bfsShortestPath(game, dest_x, dest_y, 1);
 
             if(dist < bestDist)
             {
@@ -164,14 +164,14 @@ void computerPlaceWall(struct Game *game, struct Player *computer)
 
     switch(bestDir)
     {
-        case UP   : addWall(game,ox,oy,'H',2);      break;
-        case DOWN : addWall(game,ox,oy+1,'H',2);    break;
-        case LEFT : addWall(game,ox,oy,'H',2);      break;
-        case RIGHT: addWall(game,ox+1,oy,'H',2);    break;
+        case UP   : addWall(game, ox, oy, 'H', 2);      break;
+        
+        case DOWN : addWall(game, ox, oy+1, 'H', 2);    break;
+        
+        case LEFT : addWall(game, ox, oy, 'H', 2);      break;
+        
+        case RIGHT: addWall(game, ox+1, oy, 'H', 2);    break;
     }
-    if(game->wall_count > pre)
-        computer->canwall--;
 
-    else
-    computerSmartMove(game,computer);
+    (game->wall_count > pre) ? (computer->canwall--) : computerSmartMove(game, computer);
 }
