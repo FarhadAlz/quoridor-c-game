@@ -16,6 +16,7 @@ int evaluateGame(struct Game *game)
     int oppDist = bfsShortestPath(game, game->player1.x, game->player1.y, 1);
 
     int wallFactor = game->player2.canwall - game->player1.canwall;
+
     return (oppDist - myDist + wallFactor);
 }
 
@@ -27,7 +28,7 @@ enum ComputerAction computerDecideAction(struct Game *game, struct Player *compu
     int myDist = bfsShortestPath(game, computer->x, computer->y, (computer == &game->player1) ? 1 : 2);
     int oppDist = bfsShortestPath(game, opponent->x, opponent->y, (opponent == &game->player1) ? 1 : 2);
 
-    return (myDist > oppDist || computer->canwall <= 0) ? COMPUTER_MOVE : COMPUTER_WALL;
+    return (myDist > oppDist || computer->canwall <= 0) ?  COMPUTER_MOVE : COMPUTER_WALL;
 }
 
 int bfsShortestPath(struct Game *game, int startX, int startY, int player)
@@ -84,13 +85,16 @@ int bfsShortestPath(struct Game *game, int startX, int startY, int player)
     }
 
     int shortest = INT_MAX;
-
     if (player == 1)
         for (int i = 0; i < game->dim; i++)
-            if (dist[game->dim - 1][i] < shortest) shortest = dist[game->dim - 1][i];
+        {
+            if (dist[game->dim - 1][i] < shortest)  shortest = dist[game->dim - 1][i];
+        }
     else
         for (int i = 0; i < game->dim; i++)
+        {
             if (dist[0][i] < shortest) shortest = dist[0][i];
+        }
 
     return shortest;
 }
@@ -106,13 +110,12 @@ void computerSmartMove(struct Game *game, struct Player *computer)
     int playerNum = (computer == &game->player1) ? 1 : 2;
     int best_dist = bfsShortestPath(game, computer->x, computer->y, playerNum);
 
-    enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
     int dest_x, dest_y;
+    enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
 
     for (int i = 0; i < 4; i++)
     {
         enum MoveStatus status = validateMove(computer, game, dirs[i], &dest_x, &dest_y);
-
         if (status == VALID_MOVE || status == JUMP)
         {
             int dist = bfsShortestPath(game, dest_x, dest_y, (computer == &game->player1) ? 1 : 2);
@@ -140,19 +143,19 @@ void computerPlaceWall(struct Game *game, struct Player *computer)
     int oy = opponent->y;
 
     int bestDist = bfsShortestPath(game, ox, oy, 1);
-    int dest_x,dest_y;
-    enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
-    enum Direction bestDir;
 
-    for(int i = 0; i < 4; i++)
+    enum Direction bestDir;
+    int dest_x, dest_y;
+
+    enum Direction dirs[4] = {UP, DOWN, LEFT, RIGHT};
+
+    for (int i = 0; i < 4; i++)
     {
         enum MoveStatus status = validateMove(opponent, game, dirs[i], &dest_x, &dest_y);
-
-        if(status = VALID_MOVE)
+        if (status = VALID_MOVE)
         {
             int dist = bfsShortestPath(game, dest_x, dest_y, 1);
-
-            if(dist < bestDist)
+            if (dist < bestDist)
             {
                 bestDist = dist;
                 bestDir = dirs[i];
@@ -173,5 +176,5 @@ void computerPlaceWall(struct Game *game, struct Player *computer)
         case RIGHT: addWall(game, ox+1, oy, 'H', 2);    break;
     }
 
-    (game->wall_count > pre) ? (computer->canwall--) : computerSmartMove(game, computer);
+    (game->wall_count > pre) ? computer->canwall-- : computerSmartMove(game, computer);
 }
