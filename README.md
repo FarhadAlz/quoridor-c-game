@@ -11,7 +11,7 @@ The project includes two-player game logic, playing against a **smart computer**
 
 ## Project Structure
 
-\```
+```
 ProjectRoot/
 ├── data/
 │   └── SaveGame.dat
@@ -34,7 +34,7 @@ ProjectRoot/
 │   ├── ui.c
 │   └── wall.c
 └── GAME.exe
-\```
+```
 
 ## Installation & Run
 To compile and run the project on Windows:
