@@ -41,6 +41,7 @@ To compile and run the project on Windows:
 ```bash
 gcc -I include src/*.c -o GAME.exe
 ./GAME.exe
+```
 
 ## Team Members
 -salma naderi
