@@ -92,7 +92,10 @@ void selectActionPlayer(struct Game *game, struct Player *player)
                     break;
                 }
                 else
+                {
                     printf("Invalid move! Try again.\n");
+                    break;
+                }
             }
         }
         else if (selection == 2)

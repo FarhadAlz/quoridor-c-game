@@ -25,13 +25,16 @@ void checkPath(struct Game *game, int x, int y, int player, int visited[10][10])
     }
 
     visited[x][y] = 1;
-
+    //UP:
     if (!hasHorizontalWall(game, x, y))
         checkPath(game, x, y - 1, player, visited);
+    //DOWN:
     if (!hasHorizontalWall(game, x, y + 1))
         checkPath(game, x, y + 1, player, visited);
+    //LEFT:
     if (!hasVerticalWall(game, x, y))
         checkPath(game, x - 1, y, player, visited);
+    //RIGHT:
     if (!hasVerticalWall(game, x + 1, y))
         checkPath(game, x + 1, y, player, visited);
 }
@@ -112,24 +115,30 @@ void directJumpTarget(enum Direction dir, int x, int y, int *out_x, int *out_y)
 
 void diagonalJumpTarget(enum Direction dir, enum DiagonalMove diag, int x, int y, int *out_x, int *out_y)
 {
-    *out_x = x;
-    *out_y = y;
+    int new_x = x;
+    int new_y = y;
 
     switch (diag)
     {
     case UP_LEFT:
-        (*out_x)--;
+        (new_x)--;
         break;
     case UP_RIGHT:
-        (*out_x)++;
+        (new_x)++;
         break;
     case DOWN_LEFT:
-        (*out_y)++;
+        (new_x)--;
         break;
     case DOWN_RIGHT:
-        (*out_y)++;
+        (new_x)++;
         break;
     }
+
+    if (new_x < 0 || new_x >= 10 || new_y < 0 || new_y >= 10)
+        return;
+
+    (*out_x) = new_x;
+    (*out_y) = new_y;
 }
 
 enum DiagonalMove forcedDiagonal(enum Direction dir, int left)
@@ -145,7 +154,55 @@ enum DiagonalMove forcedDiagonal(enum Direction dir, int left)
     case RIGHT:
         return left ? UP_RIGHT : DOWN_RIGHT;
     }
-    return UP_LEFT;
+    return UP_LEFT;//for no warning
+}
+
+enum DiagonalMove chooseDiagonalMove(enum Direction dir)
+{
+    int option;
+    printf("choose one option:\n");
+    switch (dir)
+    {
+    case UP:
+        do
+        {
+            printf("1. UP_RIGHT\n2. UP_LEFT\n");
+            scanf("\n%d", &option);
+
+        } while (option != 1 && option != 2);
+
+        return (option == 1) ? UP_RIGHT : UP_LEFT;
+
+    case DOWN:
+        do
+        {
+            printf("1. DOWN_RIGHT \n 2. DOWN_LEFT\n");
+            scanf("%d", &option);
+
+        } while (option != 1 && option != 2);
+
+        return (option == 1) ? DOWN_RIGHT : DOWN_LEFT;
+
+    case LEFT:
+        do
+        {
+            printf("1. UP_LEFT \n 2. DOWN_LEFT\n");
+            scanf("%d", &option);
+
+        } while (option != 1 && option != 2);
+
+        return (option == 1) ? UP_LEFT : DOWN_LEFT;
+
+    case RIGHT:
+        do
+        {
+            printf("1. UP_RIGHT \n 2. DOWN_RIGHT\n");
+            scanf("%d", &option);
+
+        } while (option != 1 && option != 2);
+
+        return (option == 1) ? UP_RIGHT : DOWN_RIGHT;
+    }
 }
 
 enum MoveStatus checkJump(struct Player *player, struct Player *otherPlayer, struct Game *game, enum Direction direction, int x, int y, int *out_x, int *out_y)
@@ -177,7 +234,7 @@ enum MoveStatus checkJump(struct Player *player, struct Player *otherPlayer, str
     enum DiagonalMove diag;
     if (left && right)
     {
-        diag = UP_LEFT;
+        diag = chooseDiagonalMove(direction);
     }
     else
         diag = forcedDiagonal(direction, left);
