@@ -13,6 +13,7 @@ The project includes two-player game logic, playing against a **smart computer**
 
 ```
 ProjectRoot/
+.
 ├── data/
 │   └── SaveGame.dat
 ├── include/
