@@ -5,6 +5,7 @@ struct Player constructPlayer(int x, int y, int wallcount, char name[])
 {
     struct Player player;
     strcpy(player.name, name);
+
     player.x = x;
     player.y = y;
     player.canwall = wallcount;
@@ -18,8 +19,10 @@ struct Game constructGame(struct Player player_1, struct Player player_2, int di
 {
     struct Game game;
     game.dim = dimention;
+
     game.player1 = player_1;
     game.player2 = player_2;
+    
     game.wall_count = 0;
     game.currentPlayer = 0;
 
