@@ -46,6 +46,7 @@ gcc -I include src/*.c -o GAME.exe
 
 ## Team Members
 -Salma Naderi
+
 -Farhad Alizade
 
 
